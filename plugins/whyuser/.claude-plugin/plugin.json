@@ -1,0 +1,20 @@
+{
+  "name": "whyuser",
+  "displayName": "WhyUser",
+  "version": "1.0.0",
+  "description": "Run WhyUser workflows, such as Content Revise, through the WhyUser MCP server.",
+  "author": {
+    "name": "WhyUser",
+    "url": "https://whyuser.com"
+  },
+  "homepage": "https://github.com/WhyUserLabs/skills",
+  "repository": "https://github.com/WhyUserLabs/skills",
+  "license": "Apache-2.0",
+  "keywords": [
+    "whyuser",
+    "mcp",
+    "workflows",
+    "buying-committee",
+    "content"
+  ]
+}

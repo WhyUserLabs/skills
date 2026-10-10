@@ -1,0 +1,15 @@
+{
+  "name": "whyuser",
+  "description": "WhyUser's skills for AI assistants.",
+  "owner": {
+    "name": "WhyUser",
+    "url": "https://whyuser.com"
+  },
+  "plugins": [
+    {
+      "name": "whyuser",
+      "source": "./plugins/whyuser",
+      "description": "Run WhyUser workflows, such as Content Revise, through the WhyUser MCP server."
+    }
+  ]
+}
