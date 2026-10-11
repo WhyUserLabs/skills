@@ -1,8 +1,8 @@
 {
   "name": "whyuser",
   "displayName": "WhyUser",
-  "version": "1.0.0",
-  "description": "Run WhyUser workflows, such as Content Revise, through the WhyUser MCP server.",
+  "version": "1.1.0",
+  "description": "Connects WhyUser's MCP server and runs WhyUser workflows, such as Content Revise.",
   "author": {
     "name": "WhyUser",
     "url": "https://whyuser.com"
@@ -16,5 +16,23 @@
     "workflows",
     "buying-committee",
     "content"
-  ]
+  ],
+  "mcpServers": {
+    "whyuser": {
+      "type": "http",
+      "url": "https://mcp.whyuser.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${user_config.whyuser_mcp_key}"
+      }
+    }
+  },
+  "userConfig": {
+    "whyuser_mcp_key": {
+      "type": "string",
+      "title": "WhyUser MCP key",
+      "description": "Create one in WhyUser under Settings → AI assistant access → New key. It starts with wu-mcp-.",
+      "required": true,
+      "sensitive": true
+    }
+  }
 }
