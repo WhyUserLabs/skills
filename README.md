@@ -4,13 +4,13 @@ Skills that let an AI assistant work with [WhyUser](https://whyuser.com).
 
 | Skill | What it does |
 |---|---|
-| `whyuser-workflows` | Runs a WhyUser workflow end to end, such as **Content Revise**: revise a page, blog post or case study against what a simulated buying committee found, then save it for WhyUser to audit. |
+| `whyuser` | The way into WhyUser for any request. It runs a simulation of any kind, reads results, and runs a WhyUser workflow end to end, such as **Revise Content** (revise a page, blog post or case study against what a simulated buying committee found, then save it for WhyUser to audit) or **Find Common Patterns** (what keeps working and breaking across a set of runs). |
 
 The steps of each workflow come from WhyUser's server when the workflow runs, so the skill itself rarely changes. This repository holds no keys and no customer data.
 
 ## 1. Install
 
-The skill only tells the assistant how to run a workflow. The WhyUser connection (the MCP server and your key) is what gives it your data and the workflow's steps. **Every assistant needs the connection; without it the skill does nothing.** Claude also uses the skill.
+The skill tells the assistant which path a request takes: a workflow, or the WhyUser tools directly. The WhyUser connection (the MCP server and your key) is what gives it your data and the workflow's steps. **Every assistant needs the connection; without it the skill does nothing.** Claude also uses the skill.
 
 Create a key in WhyUser under **Settings → AI assistant access → New key**: one key per client. It starts with `wu-mcp-` and is shown once.
 
@@ -26,7 +26,7 @@ Claude Code asks for your WhyUser MCP key and keeps it in your system's secure s
 **Claude desktop app** (two steps)
 
 1. Connect WhyUser. On the new key in WhyUser, open **Show client configuration**, copy **Claude Desktop** into `claude_desktop_config.json`, and restart Claude. It connects through the `mcp-remote` bridge, which needs Node. Skip this step if WhyUser is already a connector on your Claude account (below): connectors work in the desktop app too.
-2. Add the skill. Download [`dist/whyuser-workflows.zip`](dist/whyuser-workflows.zip). In Claude, open **Customize → Skills**, click **+**, then **Create skill → Upload a skill**, and choose the zip. Code execution must be on.
+2. Add the skill. Download [`dist/whyuser.zip`](dist/whyuser.zip). In Claude, open **Customize → Skills**, click **+**, then **Create skill → Upload a skill**, and choose the zip. Code execution must be on.
 
 **Claude on the web (and the desktop app, through your account)**
 
@@ -47,18 +47,18 @@ The assistant asks one question (which simulation to work from), writes the revi
 ```
 .claude-plugin/marketplace.json                      the marketplace Claude Code adds
 plugins/whyuser/.claude-plugin/plugin.json           the plugin: the WhyUser server and the key prompt
-plugins/whyuser/skills/whyuser-workflows/SKILL.md    the skill
-dist/whyuser-workflows.zip                           the same skill, packaged for upload to Claude (no server, no key)
+plugins/whyuser/skills/whyuser/SKILL.md              the skill
+dist/whyuser.zip                                     the same skill, packaged for upload to Claude (no server, no key)
 ```
 
 ## Changing the plugin
 
-1. Edit `plugins/whyuser/skills/whyuser-workflows/SKILL.md`.
+1. Edit `plugins/whyuser/skills/whyuser/SKILL.md`.
 2. Rebuild the zip from the repository root:
 
    ```
-   rm -f dist/whyuser-workflows.zip
-   (cd plugins/whyuser/skills && zip -r -X ../../../dist/whyuser-workflows.zip whyuser-workflows)
+   rm -f dist/whyuser.zip
+   (cd plugins/whyuser/skills && zip -r -X ../../../dist/whyuser.zip whyuser)
    ```
 
 3. Raise `version` in `plugins/whyuser/.claude-plugin/plugin.json`. Claude Code users stay on the version they installed until it changes.

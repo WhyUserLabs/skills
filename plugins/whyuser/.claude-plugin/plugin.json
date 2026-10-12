@@ -1,8 +1,8 @@
 {
   "name": "whyuser",
   "displayName": "WhyUser",
-  "version": "1.1.0",
-  "description": "Connects WhyUser's MCP server and runs WhyUser workflows, such as Content Revise.",
+  "version": "1.4.0",
+  "description": "Connects WhyUser's MCP server and is the way into WhyUser from Claude: runs simulations, reads results and runs WhyUser workflows such as Revise Content and Find Common Patterns.",
   "author": {
     "name": "WhyUser",
     "url": "https://whyuser.com"

@@ -9,7 +9,7 @@
     {
       "name": "whyuser",
       "source": "./plugins/whyuser",
-      "description": "Connects WhyUser's MCP server and runs WhyUser workflows, such as Content Revise."
+      "description": "Connects WhyUser's MCP server and is the way into WhyUser from Claude: runs simulations, reads results and runs WhyUser workflows such as Revise Content and Find Common Patterns."
     }
   ]
 }
