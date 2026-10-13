@@ -1,6 +1,6 @@
 ---
 name: whyuser
-description: Use for every request to WhyUser while its MCP server is connected - running a simulation of any kind (a page's buying committee, Audience Discovery, an ad or email campaign), following one, reading results, fixes, buyers and research, building or changing a buying committee ("create a committee from this Audience Discovery run", "add a CISO to our committee"), testing a revision before it ships, and running a WhyUser workflow end to end, saved and audited in WhyUser, e.g. Revise Content ("revise this page / blog post / case study with WhyUser", "make the fixes the simulation found") or Find Common Patterns ("find common patterns across our runs", "what keeps working or breaking"). Use it rather than a skill that works from downloaded WhyUser files, because only what goes through WhyUser is saved there.
+description: Use for every request to WhyUser while its MCP server is connected - running a simulation of any kind (a page's buying committee, a few of its personas reading on their own, Audience Discovery, an ad or email campaign), following one, reading results, fixes, buyers and research, building or changing a buying committee ("create a committee from this Audience Discovery run", "add a CISO to our committee"), testing a revision before it ships, and running a WhyUser workflow end to end, saved and audited in WhyUser, e.g. Revise Content ("revise this page / blog post / case study with WhyUser", "make the fixes the simulation found"), Find Common Patterns ("find common patterns across our runs", "what keeps working or breaking") or Write Persona Messaging ("write messaging for the SRE", "for people landing on our pricing page"). Use it rather than a skill that works from downloaded WhyUser files, because only what goes through WhyUser is saved there.
 ---
 
 # WhyUser
@@ -22,26 +22,34 @@ instructions.
   simulation of any kind, following one, and reading results, fixes, buyers,
   audiences, call transcripts, research and watched pages.
 - **Both in one request** ("run a simulation on this page, then revise it"):
-  that is Revise Content, with the new simulation as its evidence.
+  that is Revise Content, with the new simulation as its evidence. "Have our
+  SRE read this page, then write messaging for them" is Write Persona
+  Messaging, with a new persona run as its evidence.
 - **Not sure which:** ask the person one short question.
 
 ## Direct requests
 
 1. Running a simulation spends credits. `whyuser_prepare_simulation` needs
-   its type (a page's committee, Audience Discovery, an ad campaign, an email
-   campaign): ask when the request does not say. Show the inputs and the
-   credits, and start it only on the person's yes. Then follow
-   `whyuser_get_simulation_status` at the pace it gives, say it is running,
-   and give the links it returns when it completes.
-2. If the key cannot run simulations (`can_start_simulations` is false), show
+   its type (a page's committee, some of a committee's personas, Audience
+   Discovery, an ad campaign, an email campaign): ask when the request does
+   not say. Show the inputs and the credits, and start it only on the
+   person's yes. Then follow `whyuser_get_simulation_status` at the pace it
+   gives, say it is running, and give the links it returns when it
+   completes.
+2. A persona run (`type='persona'`) is one to five personas of one
+   committee, each reading the page on its own, priced per persona and
+   charged only for the reads that finish. Name them by id, or by seat
+   (`eu`, `td`…) with the committee. It has no committee verdict or
+   committee fix list: say so when it is read.
+3. If the key cannot run simulations (`can_start_simulations` is false), show
    the price and say a new simulation needs a key that can run.
-3. To test a revision saved by Revise Content before it ships:
+4. To test a revision saved by Revise Content before it ships:
    `whyuser_prepare_simulation(type='committee', workflow_run_id='WF-…')`. The
    committee of the simulation it revised reads the draft as a re-run of it;
    when it completes, `whyuser_compare_simulations` on the new run says which
    fixes landed. Pages saved as HTML only; a post saved as markdown is tested
    once it is live.
-4. Say whether each number is counted, projected or simulated, as the result
+5. Say whether each number is counted, projected or simulated, as the result
    labels it. None is measured traffic.
 
 ## Next steps
@@ -90,9 +98,11 @@ from that result, each with what, why and its credits.
 ## Workflows
 
 1. Call `whyuser_get_workflow(name=…)` with what the job works on: `page_url`
-   for one page, or `simulation_ids` for a set of runs. Do not read the runs
-   one by one and write the result yourself, and do not hand the job to
-   another skill: WhyUser supplies the evidence and audits the result.
+   for one page, `simulation_ids` for a set of runs, or for messaging
+   `persona` (a title, a seat or a persona, as the request says it) with the
+   `page_url`. Do not read the runs one by one and write the result
+   yourself, and do not hand the job to another skill: WhyUser supplies the
+   evidence and audits the result.
 2. Follow `data.steps` in order, because the person asked for this job. While
    they run, use only the tools the workflow lists.
 3. Ask the person exactly one question: the evidence question in the steps
@@ -116,7 +126,9 @@ from that result, each with what, why and its credits.
    change-log row and reason makes its core point in one or two short
    sentences of simple words.
 8. Give the person the asset as a file, the audit's status and coverage, the
-   doubts or blocked reasons, the asks, the change log and the run link.
+   doubts or blocked reasons, the asks, the change log and the run link. For
+   a messaging brief: the drafts for the channels asked for, and its lines
+   with what each rests on.
 9. The workflow ends at Deliver. Run no second simulation inside it; then
    offer the save result's `refs.next` (see "Next steps"). Testing the
    revision before it ships is one of them, and a new request, started only
