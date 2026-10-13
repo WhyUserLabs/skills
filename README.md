@@ -4,7 +4,7 @@ Skills that let an AI assistant work with [WhyUser](https://whyuser.com).
 
 | Skill | What it does |
 |---|---|
-| `whyuser` | The way into WhyUser for any request. It runs a simulation of any kind, reads results, and runs a WhyUser workflow end to end, such as **Revise Content** (revise a page, blog post or case study against what a simulated buying committee found, then save it for WhyUser to audit) or **Find Common Patterns** (what keeps working and breaking across a set of runs). |
+| `whyuser` | The way into WhyUser for any request. It runs a simulation of any kind, reads results, builds or changes a buying committee, and runs a WhyUser workflow end to end, such as **Revise Content** (revise a page, blog post or case study against what a simulated buying committee found, then save it for WhyUser to audit) or **Find Common Patterns** (what keeps working and breaking across a set of runs). |
 
 The steps of each workflow come from WhyUser's server when the workflow runs, so the skill itself rarely changes. This repository holds no keys and no customer data.
 
