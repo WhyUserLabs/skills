@@ -4,7 +4,7 @@ Skills that let an AI assistant work with [WhyUser](https://whyuser.com).
 
 | Skill | What it does |
 |---|---|
-| `whyuser` | The way into WhyUser for any request. It runs a simulation of any kind (a page's buying committee, or a few of its personas reading on their own), reads results, builds or changes a buying committee, and runs a WhyUser workflow end to end, such as **Revise Content** (revise a page, blog post or case study against what a simulated buying committee found, then save it for WhyUser to audit), **Find Common Patterns** (what keeps working and breaking across a set of runs) or **Write Persona Messaging** (what one buyer must hear, see proved and not hear, with a draft for email, LinkedIn, voicemail or a call script). |
+| `whyuser` | The way into WhyUser for any request. It runs a simulation of any kind (a page's buying committee, or a few of its personas reading on their own), re-runs one on the page as it is now so the result says what changed, reads results, builds or changes a buying committee, and runs a WhyUser workflow end to end, such as **Revise Content** (revise a page, blog post or case study against what a simulated buying committee, a persona run or an Audience Discovery run found, then save it for WhyUser to audit), **Find Common Patterns** (what keeps working and breaking across a set of runs) or **Write Persona Messaging** (what one buyer must hear, see proved and not hear, with a draft for email, LinkedIn, voicemail or a call script). |
 
 The steps of each workflow come from WhyUser's server when the workflow runs, so the skill itself rarely changes. This repository holds no keys and no customer data.
 
@@ -40,7 +40,7 @@ Connect with the configuration WhyUser's Settings shows for your client. No skil
 
 > Revise https://example.com/pricing with WhyUser and get it ready for sign-off.
 
-The assistant asks one question (which simulation to work from), writes the revised content, and saves it. WhyUser audits the result and returns a link to the run.
+The assistant asks one question (which run to work from, a re-run of it on the page as it is now, or a new one, each with its price), writes the revised content, and saves it. WhyUser audits the result and returns a link to the run.
 
 > Write persona messaging for the SRE landing on https://example.com, email only, with WhyUser.
 

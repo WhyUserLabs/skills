@@ -1,6 +1,6 @@
 ---
 name: whyuser
-description: Use for every request to WhyUser while its MCP server is connected - running a simulation of any kind (a page's buying committee, a few of its personas reading on their own, Audience Discovery, an ad or email campaign), following one, reading results, fixes, buyers and research, building or changing a buying committee ("create a committee from this Audience Discovery run", "add a CISO to our committee"), testing a revision before it ships, and running a WhyUser workflow end to end, saved and audited in WhyUser, e.g. Revise Content ("revise this page / blog post / case study with WhyUser", "make the fixes the simulation found"), Find Common Patterns ("find common patterns across our runs", "what keeps working or breaking") or Write Persona Messaging ("write messaging for the SRE", "for people landing on our pricing page"). Use it rather than a skill that works from downloaded WhyUser files, because only what goes through WhyUser is saved there.
+description: Use for every request to WhyUser while its MCP server is connected - running a simulation of any kind (a page's buying committee, a few of its personas reading on their own, Audience Discovery, an ad or email campaign), re-running one, following one, reading results, fixes, buyers and research, building or changing a buying committee ("create a committee from this Audience Discovery run", "add a CISO to our committee"), testing a revision before it ships, and running a WhyUser workflow end to end, saved and audited in WhyUser, e.g. Revise Content ("revise this page / blog post / case study with WhyUser", "make the fixes the simulation or persona run found"), Find Common Patterns ("find common patterns across our runs", "what keeps working or breaking") or Write Persona Messaging ("write messaging for the SRE", "for people landing on our pricing page"). Use it rather than a skill that works from downloaded WhyUser files, because only what goes through WhyUser is saved there.
 ---
 
 # WhyUser
@@ -41,15 +41,31 @@ instructions.
    charged only for the reads that finish. Name them by id, or by seat
    (`eu`, `td`…) with the committee. It has no committee verdict or
    committee fix list: say so when it is read.
-3. If the key cannot run simulations (`can_start_simulations` is false), show
-   the price and say a new simulation needs a key that can run.
-4. To test a revision saved by Revise Content before it ships:
-   `whyuser_prepare_simulation(type='committee', workflow_run_id='WF-…')`. The
-   committee of the simulation it revised reads the draft as a re-run of it;
-   when it completes, `whyuser_compare_simulations` on the new run says which
-   fixes landed. Pages saved as HTML only; a post saved as markdown is tested
-   once it is live.
-5. Say whether each number is counted, projected or simulated, as the result
+3. A page that already has a committee simulation or persona run
+   (`whyuser_search_simulations` lists them) is read again one of two ways,
+   and the person chooses; say what each means when you ask:
+   - **Re-run it:** `whyuser_prepare_simulation(type=<its kind>,
+     rerun_of='AN-…')`. The same committee or personas, frozen, read the page
+     as it is now, and the result says what changed since (fixed, still open,
+     new). When prepare says the run cannot be re-run, offer the new run.
+   - **New run:** `whyuser_prepare_simulation` with `page_url`. It starts a
+     new history with the committee or personas as they are today.
+
+   A re-run keeps its level: a committee simulation re-runs with its
+   committee, a persona run with its personas. To read at the other level,
+   prepare a new run of that kind. Either way, show the price and start only
+   on a yes.
+4. If the key cannot run simulations (`can_start_simulations` is false), show
+   the price and say a new simulation or re-run needs a key that can run.
+5. To test a revision saved by Revise Content before it ships:
+   `whyuser_prepare_simulation(type=…, workflow_run_id='WF-…')`, with the type
+   of the run it revised: `committee` for a committee simulation, `persona`
+   for a persona run (priced per persona). That committee or those personas
+   read the draft as a re-run of that run; when it completes,
+   `whyuser_compare_simulations` on the new run says which fixes landed.
+   Pages saved as HTML only; a post saved as markdown is tested once it is
+   live. A revision made from Audience Discovery is not tested this way.
+6. Say whether each number is counted, projected or simulated, as the result
    labels it. None is measured traffic.
 
 ## Next steps
@@ -98,7 +114,8 @@ from that result, each with what, why and its credits.
 ## Workflows
 
 1. Call `whyuser_get_workflow(name=…)` with what the job works on: `page_url`
-   for one page, `simulation_ids` for a set of runs, or for messaging
+   for one page (with `simulation_ids` too when the request names the run to
+   work from), `simulation_ids` for a set of runs, or for messaging
    `persona` (a title, a seat or a persona, as the request says it) with the
    `page_url`. Do not read the runs one by one and write the result
    yourself, and do not hand the job to another skill: WhyUser supplies the
@@ -106,12 +123,16 @@ from that result, each with what, why and its credits.
 2. Follow `data.steps` in order, because the person asked for this job. While
    they run, use only the tools the workflow lists.
 3. Ask the person exactly one question: the evidence question in the steps
-   (which simulation or runs to work from, or a new one with its price). Skip
-   it when the request already names the evidence. Ask nothing else.
+   (which run or runs to work from, a re-run of one on the page as it is now,
+   or a new one, each with its price). For Revise Content the run can be a
+   committee simulation, a persona run or an Audience Discovery run. Skip the
+   question when the request already names the evidence. If WhyUser refuses
+   a named run (`evidence.refused`), tell the person why and ask the question.
+   Ask nothing else.
 4. Never spend credits without a yes to the price, even when the request says
    to run a new simulation. If the key cannot run simulations, offer only the
-   existing ones, show what a new one would cost, and say a new one needs a
-   key that can run.
+   existing ones as they are, show what a re-run or a new one would cost, and
+   say either needs a key that can run.
 5. A claim (a metric, certification, customer, logo or integration) may come
    only from the page as it is now, from a page of the customer's own site
    (send it as a found fact; WhyUser reads the page), or from the person in
