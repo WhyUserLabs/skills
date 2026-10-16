@@ -1,6 +1,6 @@
 ---
 name: whyuser
-description: Use for every request to WhyUser while its MCP server is connected - running a simulation of any kind (a page's buying committee, a few of its personas reading on their own, Audience Discovery, an ad or email campaign), re-running one, following one, reading results, fixes, buyers and research, building or changing a buying committee ("create a committee from this Audience Discovery run", "add a CISO to our committee"), testing a revision before it ships, and running a WhyUser workflow end to end, saved and audited in WhyUser, e.g. Revise Content ("revise this page / blog post / case study with WhyUser", "make the fixes the simulation or persona run found"), Find Common Patterns ("find common patterns across our runs", "what keeps working or breaking") or Write Persona Messaging ("write messaging for the SRE", "for people landing on our pricing page"). Use it rather than a skill that works from downloaded WhyUser files, because only what goes through WhyUser is saved there.
+description: Use for every request to WhyUser while its MCP server is connected - running a simulation of any kind (a page's buying committee, a few of its personas reading on their own, Audience Discovery, an ad or email campaign), re-running one, following one, reading results, fixes, buyers and research, building or changing a buying committee ("create a committee from this Audience Discovery run", "add a CISO to our committee", "copy two buyers from Platform"), testing a revision before it ships, and running a WhyUser workflow end to end, saved and audited in WhyUser, e.g. Revise Content ("revise this page / blog post / case study with WhyUser", "make the fixes the simulation or persona run found"), Find Common Patterns ("find common patterns across our runs", "what keeps working or breaking") or Write Persona Messaging ("write messaging for the SRE", "for people landing on our pricing page"). Use it rather than a skill that works from downloaded WhyUser files, because only what goes through WhyUser is saved there.
 ---
 
 # WhyUser
@@ -88,8 +88,9 @@ from that result, each with what, why and its credits.
 ## Build Committee
 
 1. Call `whyuser_prepare_committee`. With nothing named, it returns the one
-   question to ask: build from an Audience Discovery run's passing buyers, or
-   from roles the person names. Skip the question when the request says.
+   question to ask: build from an Audience Discovery run's passing buyers,
+   from roles the person names, or from buyers already in the workspace.
+   Skip the question when the request says.
 2. **From Audience Discovery:** show the runs it lists, newest first, or a
    new run with its price (`whyuser_prepare_simulation(type='audience_discovery')`).
    Then prepare with `audience_id` and ask one question: every passing buyer
@@ -99,17 +100,33 @@ from that result, each with what, why and its credits.
 3. **Directly:** the vertical and subvertical (show every option listed),
    and for each buyer a role (eb, td, ch, eu or gr), a title and an optional
    focus. When the request already holds them, prepare and show the price.
-4. Tags belong to the committee, not to one buyer: every buyer reads them for
+4. **From buyers already in the workspace** ("copy three buyers from the
+   Platform committee"): find them with `whyuser_list_committees` (by
+   committee, role or title) and show the person who you picked. Never guess
+   a buyer. Then prepare with their persona ids:
+   - `clone_persona_ids` copies them. Each copy is a new, live persona: the
+     original stays on its committee, and the copy reads the new committee's
+     tags and changes on its own from then on.
+   - `move_in` moves them, so they leave the committee they are on. Say which
+     committee loses them.
+
+   When the person says "clone" or "copy", copy. When they say "move", move.
+   When it is unclear, ask which. Both are free and can go with new buyers
+   from either other way. A new committee of copies takes the vertical they
+   were built for unless the person names one; say which it took.
+5. Tags belong to the committee, not to one buyer: every buyer reads them for
    its own seat. Ask about them once.
-5. 1 credit per buyer generated, at most 5 buyers per committee. A change
-   that generates nobody (tags, a name, a member moved out) is free. Nothing
-   is deleted: a member taken off goes to Unassigned.
-6. To change a committee, name it (`committee`): add buyers either way,
+6. 1 credit per buyer generated, at most 5 buyers per committee, counting
+   copies and moves. A change that generates nobody (copies, moves, tags, a
+   name, a member moved out) is free. Nothing is deleted: a member taken off
+   goes to Unassigned.
+7. To change a committee, name it (`committee`): add buyers any way,
    `move_out` members, or set its tags, name or vertical. A new vertical does
    not rewrite the buyers already on it; say so.
-7. On the yes, `whyuser_start_committee(launch_id)`, then follow
-   `whyuser_get_simulation_status(simulation_id='PE-…')` until it completes.
-   Show who joined, then offer the result's `refs.next`.
+8. On the yes, `whyuser_start_committee(launch_id)`. When it generates
+   buyers, follow `whyuser_get_simulation_status(simulation_id='PE-…')` until
+   it completes. Copies and moves are done at once: the result lists each
+   copy's new id. Show who joined, then offer the result's `refs.next`.
 
 ## Workflows
 
