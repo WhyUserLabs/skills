@@ -4,7 +4,7 @@ Skills that let an AI assistant work with [WhyUser](https://whyuser.com).
 
 | Skill | What it does |
 |---|---|
-| `whyuser` | The way into WhyUser for any request. It runs a simulation of any kind (a page's buying committee, or a few of its personas reading on their own), re-runs one on the page as it is now so the result says what changed, reads results, builds or changes a buying committee, and runs a WhyUser workflow end to end, such as **Revise Content** (revise a page, blog post or case study against what a simulated buying committee, a persona run or an Audience Discovery run found, then save it for WhyUser to audit), **Find Common Patterns** (what keeps working and breaking across a set of runs) or **Write Persona Messaging** (what one buyer must hear, see proved and not hear, with a draft for email, LinkedIn, voicemail or a call script). |
+| `whyuser` | The way into WhyUser for any request. It runs a simulation of any kind (a page's buying committee, or a few of its personas reading on their own), re-runs one on the page as it is now so the result says what changed, reads results, builds or changes a buying committee, and runs a WhyUser workflow end to end, such as **Revise Content** (revise a page, blog post or case study against what a simulated buying committee, a persona run or an Audience Discovery run found, then save it for WhyUser to audit), **Revise Email Sequence** (rewrite an outbound sequence from what a simulated buying committee made of each email, merge fields kept, then save it for WhyUser to audit; from job titles and the emails, it builds the committee and runs the email simulation first, each priced and started only on your yes), **Find Common Patterns** (what keeps working and breaking across a set of runs) or **Write Persona Messaging** (what one buyer must hear, see proved and not hear, with a draft for email, LinkedIn, voicemail or a call script). |
 
 The steps of each workflow come from WhyUser's server when the workflow runs, so the skill itself rarely changes. This repository holds no keys and no customer data.
 
@@ -45,6 +45,10 @@ The assistant asks one question (which run to work from, a re-run of it on the p
 > Write persona messaging for the SRE landing on https://example.com, email only, with WhyUser.
 
 WhyUser finds the persona that title means and says why. The assistant asks which of that persona's reads of the page to work from (or a new one, with its price), writes the brief and the email, and saves it. WhyUser checks that every line rests on evidence and every claim on proof.
+
+> Here are our buyers' titles and our five-email sequence. Test it and rewrite it with WhyUser.
+
+The assistant finds or builds the committee for those titles and runs the email simulation, each with its price and only on your yes, then rewrites the sequence and saves it for WhyUser to audit. Testing the rewrite is offered as the next step, never run on its own.
 
 ## What is in this repository
 

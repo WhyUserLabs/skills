@@ -9,7 +9,7 @@
     {
       "name": "whyuser",
       "source": "./plugins/whyuser",
-      "description": "Connects WhyUser's MCP server and is the way into WhyUser from Claude: runs simulations, reads results, builds buying committees and runs WhyUser workflows: Revise Content, Find Common Patterns and Write Persona Messaging."
+      "description": "Connects WhyUser's MCP server and is the way into WhyUser from Claude: runs simulations, reads results, builds buying committees and runs WhyUser workflows: Revise Content, Revise Email Sequence, Find Common Patterns and Write Persona Messaging."
     }
   ]
 }
