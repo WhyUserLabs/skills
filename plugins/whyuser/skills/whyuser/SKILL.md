@@ -76,9 +76,15 @@ instructions.
    live. A revision made from Audience Discovery is not tested this way.
 6. An email run (`type='email_campaign'`) is a sequence of one or more
    emails read by a committee. Pass `steps` in send order, each with
-   `subject_lines` (1-2, to A/B the subject), one `body` and up to 3 `links`.
-   With two or more emails, each needs its `kind` (cold, bump, value_add,
-   break_up): ask the person, never guess it from the position. Keep merge
+   `subject_lines` (1-2, to A/B the subject), one `body`, up to 3 `links`,
+   and `preview_text` when the email has one (the inbox line under the
+   subject; left out, the inbox shows the body's first 80 characters).
+   Its `lead_intent` is the sequence type, who the emails go to: `cold`
+   (outbound, the default), `retargeting` (nurture, leads who opted in) or
+   `established` (newsletter, subscribers); ask when the request does not
+   say. In a cold sequence of two or more emails, each needs its `kind`
+   (cold, bump, value_add, break_up): ask the person, never guess it from
+   the position. A nurture or newsletter email has no kind. Keep merge
    fields (`{{first_name}}`, `{{sender_name}}`, `{{calendar_link}}`…) exactly
    as written: WhyUser fills them for each reader and for the sender. When
    prepare lists merge fields it cannot fill, ask the person for a sample
@@ -108,7 +114,10 @@ instructions.
      (`already_run`), ask the person: open that run, or re-run it. Never
      start a paid duplicate unasked; it gives the same result.
 7. Say whether each number is counted, projected or simulated, as the result
-   labels it. None is measured traffic.
+   labels it. None is measured traffic. Of an email's numbers, the open rate
+   is the weakest: weigh replies and clicks first, and when a run is called
+   against an open-rate baseline, say real open rates run high because inbox
+   privacy features count opens nobody made.
 
 ## Next steps
 
@@ -194,8 +203,10 @@ with `simulation_ids=['EC-…']` when the request names the email run.
      optional inputs with their recommended values, and the price, in one
      question. Never guess a buyer.
    - **The email simulation.** `whyuser_prepare_simulation(
-     type='email_campaign', committee=…, steps=[…])` with the emails as
-     written, each email's kind asked, never guessed; the sender and sample
+     type='email_campaign', committee=…, lead_intent=…, steps=[…])` with
+     the emails as written, the sequence type asked when the request does not
+     say it, and in a cold sequence each email's kind asked, never guessed;
+     the sender and sample
      merge values when prepare asks for them. Show the settings table with the
      recommended values and the price; start on a yes; follow it to
      completion. Its `EC-…` id is the workflow's evidence.
@@ -208,12 +219,20 @@ with `simulation_ids=['EC-…']` when the request names the email run.
    those of kind `email_sequence` (its own rules for sequences) above all.
    Without one, use these email practices, as the steps also say: one idea
    and one ask per email; a specific subject line of a few words (under the
-   limit the definition gives); a first line about the reader, never about
-   the sender; a cold email in about 50-125 words, short paragraphs, plain
-   text; one call to action, small asks before the meeting ask, a booking
-   link only with a meeting ask; each follow-up adds something new and never
-   repeats an earlier angle; the asks climb across the sequence and the
-   break-up email comes last, short and polite; at most one sourced proof
+   limit the definition gives) that reads like a colleague's note, with no
+   ad-style question, company-name pitch or emoji; a preview text, when the
+   email has one, that adds to its subject and never repeats it; a first line
+   about the reader, never about the sender, and a personal detail only when
+   it leads to the problem; a cold email in about 50-125 words, shorter the
+   more senior the reader (three or four sentences for an economic buyer),
+   short paragraphs, plain text; one call to action, small asks before the
+   meeting ask, a booking link only with a meeting ask; each follow-up adds
+   something new and never repeats an earlier angle; the asks climb across
+   the sequence and the break-up email comes last, short and polite. A
+   nurture or newsletter sequence goes to people who opted in: it may run
+   longer (under the limit the definition gives), gives something useful
+   before each ask, asks for the next step it exists for rather than a cold
+   meeting, and has no break-up email. At most one sourced proof
    point per email; two or three links at most, each to a page that keeps the
    email's promise; nothing that reads as spam; sign off with the sender.
    Keep every merge field as written and never invent one. A practice never
