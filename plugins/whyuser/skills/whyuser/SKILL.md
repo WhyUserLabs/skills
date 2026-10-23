@@ -35,7 +35,18 @@ instructions.
 1. Running a simulation spends credits. `whyuser_prepare_simulation` needs
    its type (a page's committee, some of a committee's personas, Audience
    Discovery, an ad campaign, an email campaign): ask when the request does
-   not say. Before any start, show the person ONE table: every input as it
+   not say. A new page run (a committee simulation or a persona run) also
+   needs its page type, which decides what each buyer judges: prepare asks
+   for it (`page_type`) with the likeliest 2-3 choices, each with why, the
+   likeliest marked recommended. Never pick one yourself and never send one
+   the person did not choose, even when the address looks obvious: a
+   homepage can carry a Trial button, and a sign-up page can have any
+   address. Show those choices (a "Sign-up page" is a page whose job is one
+   form: register, sign up, download, start a trial or request a demo) and
+   ask which it is; when the request does not say what the page is for, ask
+   in the same question for its `goal` in the person's words ("register for
+   the webinar"), optional. Then prepare again with them. Before any start,
+   show the person ONE table: every input as it
    will run, then every optional input prepare lists (`optional_inputs`) with
    WhyUser's recommended value and why, marked recommended, then the credits.
    Ask one question: start as it is, take the recommended values, or change
@@ -57,13 +68,20 @@ instructions.
      rerun_of='AN-…')`. The same committee or personas, frozen, read the page
      as it is now, and the result says what changed since (fixed, still open,
      new). When prepare says the run cannot be re-run, offer the new run.
+     The run in `rerun_of` is the one the result is compared with: the run
+     the person names, or else the latest run of its history
+     (`whyuser_get_simulation` with `page_url` reads the latest). Prepare's
+     `history` names the latest; when its notes say the run given is not
+     the latest, the one question that comes with the price also asks which
+     run to compare with. The table names the run compared with.
    - **New run:** `whyuser_prepare_simulation` with `page_url`. It starts a
      new history with the committee or personas as they are today.
 
    A re-run keeps its level: a committee simulation re-runs with its
-   committee, a persona run with its personas. To read at the other level,
-   prepare a new run of that kind. Either way, show the price and start only
-   on a yes.
+   committee, a persona run with its personas. It also keeps its page type
+   and goal: a page type or goal given with `rerun_of` is ignored. To read at
+   the other level, or as another page type, prepare a new run (it asks the
+   page type). Either way, show the price and start only on a yes.
 4. If the key cannot run simulations (`can_start_simulations` is false), show
    the price and say a new simulation or re-run needs a key that can run.
 5. To test a revision saved by Revise Content before it ships:
@@ -91,7 +109,9 @@ instructions.
    value of each and prepare again with `merge_values`; give the sender
    (name, role and company together) when the emails sign as the sender. The
    settings the WhyUser email form has are optional inputs here too, each
-   with a recommended value in the table: `page_type` (what the links open),
+   with a recommended value in the table: `page_type` (what the links open:
+   `LANDING_PAGE`, `SIGNUP_PAGE` for a page whose job is one form, or
+   `CONTENT_PAGE`),
    `baselines` (the open, click and reply rates each email is called
    against; left out, the saved Baselines or WhyUser's defaults are used)
    and `brand_context` (what readers already know about the sender). One
@@ -109,7 +129,10 @@ instructions.
      the run's sender and sample merge values, and
      `whyuser_compare_simulations` on the new run lists, email by email,
      what was fixed, what is still open and what is new. A new run without
-     `rerun_of` starts a new history; ask which, as for a page.
+     `rerun_of` starts a new history; ask which, as for a page. Choose
+     `rerun_of` as for a page: the run the person names, or else the latest
+     of its history, never an older one unasked. A saved revision is always
+     compared with the run it revised: say so when that is not the latest.
    - **Already run:** when prepare says these exact emails were run before
      (`already_run`), ask the person: open that run, or re-run it. Never
      start a paid duplicate unasked; it gives the same result.
@@ -255,8 +278,10 @@ with `simulation_ids=['EC-…']` when the request names the email run.
    (which run or runs to work from, a re-run of one on the page as it is now,
    or a new one, each with its price). For Revise Content the run can be a
    committee simulation, a persona run or an Audience Discovery run; for
-   Revise Email Sequence, an email run or a new email simulation. Skip the
-   question when the request already names the evidence. If WhyUser refuses
+   Revise Email Sequence, an email run or a new email simulation. When the
+   person picks a new page run, its page type (the 2-3 choices prepare
+   lists, see "Direct requests") and goal are asked in that same question.
+   Skip the question when the request already names the evidence. If WhyUser refuses
    a named run (`evidence.refused`), tell the person why and ask the question.
    Ask nothing else. The settings table that comes with a price (see
    "Direct requests") is part of that price's yes, not another question.
@@ -269,7 +294,15 @@ with `simulation_ids=['EC-…']` when the request names the email run.
    (send it as a found fact; WhyUser reads the page), or from the person in
    this conversation, including a document your own connectors read (flagged
    for review). Leave anything else out and record the fix as not done, with
-   an ask for the fact it needs. Never state a simulated number as fact.
+   an ask for the fact it needs. Never state a simulated number as fact. A
+   found fact the save returns as `inferred` is not sourced: WhyUser did not
+   find it on that page. Take the claim out, mark its fix `not_done` with
+   `no_proof` and an ask, and save again.
+   On a page a platform hosts (the evidence names it: a Zoom registration
+   page, an ON24 event, a HubSpot form), change only the fields it lists as
+   editable. A fix aimed at what the platform controls (its button, header,
+   footer, privacy notices, layout) is `not_done` with `platform_controlled`.
+   A `partial` fix says in its `reason` what is still missing.
 6. Always finish with `whyuser_save_workflow_run`, even when you also give the
    person a file. A run that is not saved is not in WhyUser. WhyUser audits
    the run. If the audit says `blocked`, correct what it names and save again,
@@ -277,8 +310,9 @@ with `simulation_ids=['EC-…']` when the request names the email run.
 7. Keep what the run says about itself short: each summary line, ask,
    change-log row and reason makes its core point in one or two short
    sentences of simple words.
-8. Give the person the asset as a file, the audit's status and coverage, the
-   doubts or blocked reasons, the asks, the change log and the run link. For
+8. Give the person the asset as a file, the audit's status and coverage,
+   each fix's status (`fixes`: done, partial with what is missing, or not
+   done with why), the doubts or blocked reasons, the asks, the change log and the run link. For
    a messaging brief: the drafts for the channels asked for, and its lines
    with what each rests on. For a revised email sequence: each email's
    subject lines and body, ready to paste.
