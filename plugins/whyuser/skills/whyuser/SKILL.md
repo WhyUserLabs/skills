@@ -142,6 +142,34 @@ instructions.
    against an open-rate baseline, say real open rates run high because inbox
    privacy features count opens nobody made.
 
+## Is it ready, and what changed
+
+A finished committee simulation, email run or ad run carries `data.ready`:
+WhyUser's ship verdict (Ready, Ready with polish, or Not yet), worked out in
+code from counted simulated reads, never by an AI.
+
+1. Lead with it, in one line, before any detail.
+2. **Not yet:** name only its blockers (`ready.blockers`, the first one
+   first) and what fixes each. Everything else open is polish: give its count
+   once, never as a to-do list.
+3. **Ready** or **Ready with polish:** say it is ready to send, publish or
+   launch, and stop. Suggest no more edits or runs unless the person asks:
+   every edited line is read again and can raise something new.
+4. **A re-run** leads with `data.change`: the run it re-ran, then what was
+   fixed, improved and new, then `ready` over that comparison. Read it as a
+   change report, never as a fresh list of problems. A rate moved only when
+   the scoreboard says up or down; "no clear change" is run-to-run noise,
+   not a drop. A new problem counts only on text that was edited. An email
+   before every edited one reads exactly as before; one after an edit is
+   read afresh, since its readers saw the edit first.
+5. `change.status` `unavailable`: WhyUser could not compare the re-run; say
+   so, and that its own read stands. `not_compared_yet`: the comparison is
+   still being written; check the status again, and never call it unchanged.
+6. A run that ends "WhyUser could not complete this simulation reliably"
+   published nothing and used no credits. Say so and offer to run it again
+   (prepare shows the price). Never re-run from a run that failed: re-run
+   from the newest one that completed.
+
 ## Next steps
 
 Many results carry `refs.next`: at most two next steps WhyUser worked out
@@ -273,7 +301,10 @@ with `simulation_ids=['EC-…']` when the request names the email run.
    yourself, and do not hand the job to another skill: WhyUser supplies the
    evidence and audits the result.
 2. Follow `data.steps` in order, because the person asked for this job. While
-   they run, use only the tools the workflow lists.
+   they run, use only the tools the workflow lists. Make every fix marked
+   `blocking: true`: it is why the run is Not yet. Leave each polish fix
+   (`blocking: false`) `not_done` with reason_code `polish`, its text
+   untouched, unless the person asks for polish.
 3. Ask the person exactly one question: the evidence question in the steps
    (which run or runs to work from, a re-run of one on the page as it is now,
    or a new one, each with its price). For Revise Content the run can be a
