@@ -4,7 +4,7 @@ Skills that let an AI assistant work with [WhyUser](https://whyuser.com).
 
 | Skill | What it does |
 |---|---|
-| `whyuser` | The way into WhyUser for any request. It runs a simulation of any kind (a page's buying committee, or a few of its personas reading on their own), re-runs one on the page as it is now so the result says what changed, reads results, builds or changes a buying committee, and runs a WhyUser workflow end to end, such as **Revise Content** (revise a page, blog post or case study against what a simulated buying committee, a persona run or an Audience Discovery run found, then save it for WhyUser to audit), **Revise Email Sequence** (rewrite an outbound sequence from what a simulated buying committee made of each email, merge fields kept, then save it for WhyUser to audit; from job titles and the emails, it builds the committee and runs the email simulation first, each priced and started only on your yes), **Find Common Patterns** (what keeps working and breaking across a set of runs) or **Write Persona Messaging** (what one buyer must hear, see proved and not hear, with a draft for email, LinkedIn, voicemail or a call script). |
+| `whyuser` | The way into WhyUser for any request. It runs a simulation of any kind (a page's buying committee, or a few of its personas reading on their own), re-runs one on the page as it is now so the result says what changed, reads results, builds or changes a buying committee, and runs a WhyUser workflow end to end, such as **Revise Content** (revise a page, blog post or case study against what a simulated buying committee, a persona run or an Audience Discovery run found, then save it for WhyUser to audit), **Revise Email Sequence** (rewrite an outbound sequence from what a simulated buying committee made of each email, merge fields kept, then save it for WhyUser to audit; from job titles and the emails, it builds the committee and runs the email simulation first, each priced and started only on your yes), **Find Common Patterns** (what keeps working and breaking across a set of runs), **Compare Before and After** (a page's new read against its earlier one: what improved, what regressed and the fixes left, in a report your team marks agree or disagree) or **Write Persona Messaging** (what one buyer must hear, see proved and not hear, with a draft for email, LinkedIn, voicemail or a call script). |
 
 The steps of each workflow come from WhyUser's server when the workflow runs, so the skill itself rarely changes. This repository holds no keys and no customer data.
 
@@ -49,6 +49,10 @@ WhyUser finds the persona that title means and says why. The assistant asks whic
 > Here are our buyers' titles and our five-email sequence. Test it and rewrite it with WhyUser.
 
 The assistant finds or builds the committee for those titles and runs the email simulation, each with its price and only on your yes, then rewrites the sequence and saves it for WhyUser to audit. Testing the rewrite is offered as the next step, never run on its own.
+
+> Compare the new reads of our pricing and demo pages with the earlier ones with WhyUser.
+
+WhyUser pairs each page's new read with its earlier one and says how alike the two reads are. The assistant confirms the pairs in one question (a re-run or extra read is priced first), writes the report from what WhyUser counted, and saves it for WhyUser to audit. Your team then marks each finding and fix agree or disagree on the comparison's page in WhyUser.
 
 ## What is in this repository
 

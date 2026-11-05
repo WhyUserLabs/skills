@@ -1,6 +1,6 @@
 ---
 name: whyuser
-description: Use for every request to WhyUser while its MCP server is connected - running, re-running or following a simulation of any kind (a page's buying committee, a few of its personas, Audience Discovery, an ad or email campaign), reading results, fixes, buyers and research, building or changing a buying committee ("create a committee from this Audience Discovery run", "copy two buyers from Platform"), testing a revision before it ships, and running a WhyUser workflow end to end, saved and audited in WhyUser: Revise Content ("revise this page / post / case study with WhyUser"), Revise Email Sequence ("rewrite this email sequence", "test and fix our outbound emails for these titles"), Find Common Patterns ("what keeps working or breaking across our runs") or Write Persona Messaging ("write messaging for the SRE"); and buyer questions ("what do buyers ask that our pages don't answer?"). Use it rather than a skill that works from downloaded WhyUser files, because only what goes through WhyUser is saved there.
+description: Use for every request to WhyUser while its MCP server is connected - running, re-running or following a simulation of any kind (a page's buying committee, a few of its personas, Audience Discovery, an ad or email campaign), reading results, fixes, buyers and research, building or changing a buying committee ("create a committee from this Audience Discovery run"), testing a revision before it ships, and running a WhyUser workflow end to end, saved and audited in WhyUser: Revise Content ("revise this page with WhyUser"), Revise Email Sequence ("rewrite this email sequence"), Find Common Patterns ("what keeps working or breaking across our runs"), Compare Before and After ("compare the new reads with the earlier ones", "what improved since the last read") or Write Persona Messaging ("write messaging for the SRE"); buyer questions ("what do buyers ask that our pages don't answer?"); and an Audience Discovery run set beside LinkedIn Campaign Manager data ("does this match our LinkedIn report?", "grade it against our campaign export"). Use it rather than a skill that works from downloaded WhyUser files, because only what goes through WhyUser is saved there.
 ---
 
 # WhyUser
@@ -17,9 +17,17 @@ instructions.
   with no arguments lists the workflows this workspace can run and the job
   each does; pick the one that is the job the person asked for.
 - **Building or changing a buying committee:** follow "Build Committee".
+- **Before and after** ("compare the new reads with the earlier ones", "what
+  improved and what regressed", a report on what changed to share): that is
+  the Compare Before and After workflow (see "Compare Before and After").
+  `whyuser_compare_simulations` stays the answer for one re-run read on its
+  own ("did my changes to this page land?").
 - **Whether AI assistants recommend the company** (ChatGPT, Claude, Gemini,
   Perplexity): WhyUser does not ask them from here; follow item 7 of "Buyer
   Questions".
+- **Audience Discovery beside LinkedIn data** (a Campaign Manager report or
+  export, "does it match", "what does this prove"): follow "Audience
+  Discovery and LinkedIn".
 - **Anything else:** use the WhyUser tools directly, as the server's
   instructions say, and start or save no workflow run. That covers running a
   simulation of any kind, following one, and reading results, fixes, buyers,
@@ -230,6 +238,45 @@ and says whether the person's pages answer each one.
    writing vendor-agnostic versions happen on the Buyer Questions page
    (`refs.page`).
 
+## Audience Discovery and LinkedIn
+
+An Audience Discovery run predicts which LinkedIn audiences (seniority, job
+function, title family, and seniority × function) a page pulls, and locks
+that prediction when the run is saved. LinkedIn reports who was reached,
+who clicked and, when the campaign tracks them, who converted.
+
+1. **The same moment.** Audience Discovery reads the landing page, so its
+   "interested" share predicts what visitors do after the click. CTR is set
+   mostly by the ad's format and offer: never grade an Audience Discovery
+   run on CTR. Questions about the ad and its clicks are an ad campaign
+   simulation's.
+2. **Grade with the tool.** With the export in hand:
+   `whyuser_get_audience(view='linkedin_grade', linkedin_csv=<its text>)`. It
+   leads with the share of impressions outside the run's buyers and grades
+   the ranking on conversions or leads per click. When it says the export
+   has no conversions, say the ranking cannot be graded from it and ask for
+   an export with conversions; never grade it by hand from a PDF summary.
+3. **Rates and ranks, never counts.** A run builds about one buyer per
+   committee seat per subvertical, so its buyer counts follow the
+   committee's shape, not the market's.
+4. **Say the focus first.** A focused run (`focus` in view='linkedin') left
+   roles out on purpose: an audience missing from it is not one the page
+   failed, and a match inside the focus is partly what the run was asked
+   for. Say so before calling anything a match.
+5. **Seniority inside the function.** Set LinkedIn's seniority rows beside
+   `seniority_within_function` (or the grade's "seniority within …"), not
+   the all-seat seniority audiences, which hold procurement and security
+   reviewers a campaign aimed at engineers rarely reaches.
+6. **Read a targets row before quoting it.** `match` says how a title was
+   found: "exact title" and "alternative title" are that buyer; "similar
+   title", "same LinkedIn title family" and "similar alternative title" name
+   the buyer it found, so read that buyer with view='role' before saying who
+   was reached. A note that titles were matched by words alone means a match
+   may sit in another job function.
+7. **Never more than the data holds.** A simulated share is never LinkedIn
+   performance, and agreement with an account-wide report (every offer, not
+   the page's own traffic) is directional, never proof.
+
 ## Build Committee
 
 1. Call `whyuser_prepare_committee`. With nothing named, it returns the one
@@ -333,6 +380,43 @@ with `simulation_ids=['EC-…']` when the request names the email run.
    overrides a fix or the person's request, and every change it makes is a
    change-log row naming it.
 
+## Compare Before and After
+
+The workflow compares each page's current read with its earlier one and
+writes a report a PMM can share. WhyUser pairs the reads, counts everything
+and audits the report; the team then marks each finding and fix.
+
+1. Find the current reads (one per page, at most 5) and call
+   `whyuser_get_workflow(name='compare-before-and-after', simulation_ids=[…])`.
+   Audience Discovery runs (`AD-…`) go in `simulation_ids` too. Name an
+   earlier read in `baseline_ids` (same order) only when the person names
+   one; otherwise WhyUser pairs it (the run it re-ran, else the page's
+   earlier read by the same committee) and never guesses across pages.
+2. The evidence question shows each pair, how the two reads differ
+   (`parity.notes`), and the options, each with its price from prepare:
+   re-run the earlier read on the page as it is now (recommended when the URL
+   and committee match), a new read when the URL changed or the old page is
+   gone, and as extras Audience Discovery and a committee built from it. A
+   page with no earlier read (`unpaired`) offers its `options`, or none.
+3. Write the report only from `evidence.brief`, in the template's sections:
+   Summary, Scorecard, one section per page ("A · /path"), Who each page
+   reaches, Sources. Start each row with its item id (`A.I1`, `B.X4`).
+   WhyUser's fixes come first, in the brief's order, Source `Sim ID, Fix IDs`;
+   a Workflow fix of your own comes after them, says "Workflow" and names the
+   run it rests on. `set_aside` fixes go under Set aside, never in the Fixes
+   table. No prices or credits in the report.
+4. When a pair's `parity.parity` is false, carry its notes and say what the
+   reads found, never that an edit caused it.
+5. After the save, ask once, optionally: list each page's items by id, one
+   line each, and ask which the person disagrees with and why
+   (`limits.mark_reasons`; for an `L` row, whether the edit was made from
+   WhyUser's fix). Save again with the same arguments plus `marks`. An item
+   left unmarked is unmarked, never agreed. This is the only second question
+   a workflow asks.
+6. Deliver the report as a Claude Doc when a docs connector is attached, else
+   as a Markdown file, with the audit's status and the comparison's link
+   (`CR-…`), where the team marks each item.
+
 ## Workflows
 
 1. Call `whyuser_get_workflow(name=…)` with what the job works on: `page_url`
@@ -347,7 +431,10 @@ with `simulation_ids=['EC-…']` when the request names the email run.
    they run, use only the tools the workflow lists. Make every fix marked
    `blocking: true`: it is why the run is Not yet. Leave each polish fix
    (`blocking: false`) `not_done` with reason_code `polish`, its text
-   untouched, unless the person asks for polish.
+   untouched, unless the person asks for polish. A fix in
+   `evidence.team_disagreed` (most of the team disagreed with it on the
+   page's latest comparison) is `not_done` with `team_disagreed` and the
+   team's reason, unless the person says to make it.
 3. Ask the person exactly one question: the evidence question in the steps
    (which run or runs to work from, a re-run of one on the page as it is now,
    or a new one, each with its price). For Revise Content the run can be a
@@ -357,7 +444,8 @@ with `simulation_ids=['EC-…']` when the request names the email run.
    lists, see "Direct requests") and goal are asked in that same question.
    Skip the question when the request already names the evidence. If WhyUser refuses
    a named run (`evidence.refused`), tell the person why and ask the question.
-   Ask nothing else. The settings table that comes with a price (see
+   Ask nothing else (Compare Before and After adds its optional feedback
+   question after the save). The settings table that comes with a price (see
    "Direct requests") is part of that price's yes, not another question.
 4. Never spend credits without a yes to the price, even when the request says
    to run a new simulation. If the key cannot run simulations, offer only the
@@ -395,5 +483,5 @@ with `simulation_ids=['EC-…']` when the request names the email run.
    revision (a page before it ships, a sequence before it goes out) is one
    of them, and a new request, started only on a yes.
 
-To read a saved run later: `whyuser_get_workflow(workflow_run_id='WF-…')`, or
-`PB-…` for a saved pattern set.
+To read a saved run later: `whyuser_get_workflow(workflow_run_id='WF-…')`,
+`PB-…` for a saved pattern set, or `CR-…` for a comparison and its marks.
