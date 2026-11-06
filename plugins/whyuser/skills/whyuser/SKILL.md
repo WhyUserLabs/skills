@@ -485,3 +485,10 @@ and audits the report; the team then marks each finding and fix.
 
 To read a saved run later: `whyuser_get_workflow(workflow_run_id='WF-…')`,
 `PB-…` for a saved pattern set, or `CR-…` for a comparison and its marks.
+A saved pattern set's read carries what its page in WhyUser shows:
+`patterns` (each W, B and F row: label, what it means, the roles, and under
+`on` one line per page from that page's run, or a fix's own version for that
+page) and `committees` (the committees that read its pages, by name). Answer
+"what is in PB-…" from those; do not count the set again or read each run to
+rebuild it. A line is a simulated read in the run's own words, not a quote:
+`whyuser_get_simulation(simulation_id)` has the evidence behind it.
