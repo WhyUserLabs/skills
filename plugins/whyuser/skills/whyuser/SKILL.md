@@ -204,13 +204,23 @@ from that result, each with what, why and its credits.
 `whyuser_search_buyer_questions` ranks the questions End-Customer buyers ask
 and says whether the person's pages answer each one.
 
-1. With no arguments it gives the counts and the top few. Filter for the
-   rest: "what do security reviewers ask that we don't answer?" is
+1. With no arguments it gives the counts for every view, the products and
+   use cases the person tracks, and the top few. Filter for the rest: "what
+   do security reviewers ask that we don't answer?" is
    `role='gr', answer='not_answered'`. `question_id` reads one in full.
-2. A question that names no company is **vendor-agnostic**; never call it
+2. **Products, use cases and the Company view.** WhyUser reads the person's
+   site for its products and use cases; the person ticks the ones to track.
+   `item` narrows to one by its name ("AI Gateway"), or `item='company'` for
+   the Company view: pricing model, security, contracts and other
+   company-wide questions, filed under no product. An unknown name lists the
+   items; pick one, never guess. `paused: true` means the item is paused: its
+   questions are kept but not checked or searched, so its counts stop at the
+   date it was paused. Tracking, pausing, renaming and merging items, and
+   choosing rivals and pages, happen on the Buyer Questions page.
+3. A question that names no company is **vendor-agnostic**; never call it
    "category". Prompts to track in AI-answer tools are
    `scope='vendor_agnostic'`.
-3. **Whose wording.** `wording='asked'` is a buyer's own words. A question
+4. **Whose wording.** `wording='asked'` is a buyer's own words. A question
    "from N questions" is WhyUser's wording, and one "written by <name>" is
    the team's. Never present either as a buyer quote: their quotes are how
    buyers asked the original, naming a company. `asked_this_way: 0` means no
@@ -218,23 +228,34 @@ and says whether the person's pages answer each one.
    question WhyUser wrote from the person's research, calls or trends because
    no buyer asked it where WhyUser can read: say "written from your data",
    cite `written_from`, and never count it as asked.
-4. **Counts.** `askers` are different buyers, `on_calls` calls, `in_public`
+5. **Checklist questions.** `origin: 'checklist'` (labelled "our checklist,
+   not a buyer") is WhyUser's fixed checklist: what a role needs answered
+   before buying (public pricing, caps, security proof, SLAs and so on).
+   Never say buyers asked it. `asked_this_way` counts buyers who asked it
+   too; say "no buyer has asked it yet" when it is 0.
+6. **Counts.** `askers` are different buyers, `on_calls` calls, `in_public`
    public pages and `user_defined` rows the team uploaded (one per account);
    none is traffic or search volume. Quotes come from the person's own calls
    and uploads. What buyers wrote in public is only counted: its quotes and
    links are on the Buyer Questions page.
-5. **User defined.** A quote of kind "user defined" is the team's own record
+7. **User defined.** A quote of kind "user defined" is the team's own record
    (CRM notes, an RFP, what sales heard), not a call: say "your team
    recorded", never "a buyer said on a call".
-6. **Answers.** Report each answer as the result labels it. `answer_set_by`
+8. **Answers.** Report each answer as the result labels it. `answer_set_by`
    means someone on the team set it by hand; say who. When proof is "none on
    file", never write that claim into copy.
-7. **AI assistants.** WhyUser does not ask ChatGPT, Claude, Gemini or
+9. **Who buyers find.** `who_answers` is one plain search, at one time
+   (`searched_at`), for a question the person's pages don't fully answer:
+   who owned the top results, by kind (you, you elsewhere, a rival, another
+   vendor, a third party), and `you_rank` when the person showed up. Say
+   "in one search on <date>"; results change, so it is never traffic, a
+   ranking to track, or proof of what buyers read.
+10. **AI assistants.** WhyUser does not ask ChatGPT, Claude, Gemini or
    Perplexity from here, so never say whether they name or recommend the
    company. To track that in an AI-answer tool, use the vendor-agnostic
    questions (`scope='vendor_agnostic'`) as its prompts; the page's Export →
    Prompt list gives them as a file.
-8. It is read-only. Editing, deleting, merging, uploading questions and
+11. It is read-only. Editing, deleting, merging, uploading questions and
    writing vendor-agnostic versions happen on the Buyer Questions page
    (`refs.page`).
 
