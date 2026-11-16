@@ -1,6 +1,6 @@
 ---
 name: whyuser
-description: Use for every request to WhyUser while its MCP server is connected - running, re-running or following a simulation (a page's buying committee, its personas, Audience Discovery, an ad or email campaign); reading results, fixes, buyers and research; building or changing a committee ("create a committee from this Audience Discovery run"); testing a revision before it ships; and running a WhyUser workflow end to end, saved and audited - Revise Content ("revise this page with WhyUser"), Revise Email Sequence ("rewrite this email sequence"), Find Common Patterns ("what keeps working or breaking across our runs"), Compare Before and After ("what improved since the last read") or Write Persona Messaging ("write messaging for the SRE"). Also buyer questions ("what do buyers ask that our pages don't answer?") and an Audience Discovery run beside LinkedIn Campaign Manager data ("does this match our LinkedIn report?"). Use it over a skill that reads downloaded WhyUser files - only what goes through WhyUser is saved.
+description: Use for every request to WhyUser while its MCP server is connected - running, re-running or following a simulation (a page's buying committee, its personas, Audience Discovery, an ad or email campaign); reading results, fixes, buyers and research; building or changing a committee; testing a revision before it ships; and running a WhyUser workflow end to end, saved and audited - Revise Content ("revise this page with WhyUser"), Revise Email Sequence ("rewrite this email sequence"), Find Common Patterns ("what keeps working or breaking across our runs"), Compare Before and After ("what improved since the last read"), Write Persona Messaging ("write messaging for the SRE") or Write Buyer Content ("content from our buyer questions"). Also buyer questions ("what do buyers ask that our pages don't answer?") and an Audience Discovery run beside LinkedIn Campaign Manager data ("does this match our LinkedIn report?"). Use it over a skill that reads downloaded WhyUser files - only what goes through WhyUser is saved.
 ---
 
 # WhyUser
@@ -22,6 +22,11 @@ instructions.
   the Compare Before and After workflow (see "Compare Before and After").
   `whyuser_compare_simulations` stays the answer for one re-run read on its
   own ("did my changes to this page land?").
+- **Content from buyer questions** ("write content from our buyer questions",
+  "turn the questions our pages miss into a guide, an FAQ or a comparison
+  page"): that is the Write Buyer Content workflow (see "Write Buyer
+  Content"). Reading the questions alone ("what do buyers ask?") stays
+  "Buyer Questions".
 - **Whether AI assistants recommend the company** (ChatGPT, Claude, Gemini,
   Perplexity): WhyUser does not ask them from here; follow item 7 of "Buyer
   Questions".
@@ -258,6 +263,10 @@ and says whether the person's pages answer each one.
 11. It is read-only. Editing, deleting, merging, uploading questions and
    writing vendor-agnostic versions happen on the Buyer Questions page
    (`refs.page`).
+12. **Fit and topic.** Each question carries whether answering it takes one
+   short factual answer (FAQ) or an article (content), and its topic. Both
+   come from the Buyer Questions refresh; a person can change the fit on
+   the page. Writing content from them is Write Buyer Content.
 
 ## Audience Discovery and LinkedIn
 
@@ -401,6 +410,37 @@ with `simulation_ids=['EC-…']` when the request names the email run.
    overrides a fix or the person's request, and every change it makes is a
    change-log row naming it.
 
+## Write Buyer Content
+
+The job: content that answers the buyer questions the company's pages miss —
+guides, comparison pages, FAQ entries, blog posts or LinkedIn posts — in the
+company's own voice, saved and audited. It follows "Workflows" below;
+`whyuser_get_workflow(name='write-buyer-content')`. It spends no credits.
+
+1. **The plan question is the one question.** Show the plan as ONE table
+   grouped by topic, the defaults ticked, with each question's fit, the
+   suggested type and length, who asks it and whether the site answers it;
+   then what the defaults make ("3 questions → 1 guide"), and the choices
+   (tick, untick, change a type or length; optionally who it is for, the
+   call to action and anything to avoid). Then call again with `plan`.
+2. **Rival questions** suggest a comparison page with that rival and are
+   never ticked: offer to tick them. Only rivals the company tracks are in
+   the plan, and a piece names no other company.
+3. **Compiled questions** were written from the company's data: say so and
+   never say a buyer asked one.
+4. **The voice guide.** A guideline link wins. Without one that opens, use
+   the guide WhyUser keeps (its text comes with the definition). With
+   neither, write one from the company's own pages as the steps say, with
+   WhyUser's writing practices word for word, and send it with the save as
+   `voice_guide`: WhyUser keeps it for every workflow. Never ask the person
+   to approve it first; show it after the content. A new version of it only
+   when the person asks (`regenerate_guide`, then `voice_guide_replace`).
+5. **Every question picked is answered under a heading of its piece**, named
+   in `answers`; every claim is a found fact from the company's own site.
+6. **Deliver** each piece ready to paste, the audit's status, the asks, the
+   run link and, when this run wrote the guide, the guide and its WhyUser
+   link.
+
 ## Compare Before and After
 
 The workflow compares each page's current read with its earlier one and
@@ -443,9 +483,10 @@ and audits the report; the team then marks each finding and fix.
 1. Call `whyuser_get_workflow(name=…)` with what the job works on: `page_url`
    for one page (with `simulation_ids` too when the request names the run to
    work from), `simulation_ids=['EC-…']` for an email run (Revise Email
-   Sequence), `simulation_ids` for a set of runs, or for messaging
+   Sequence), `simulation_ids` for a set of runs, for messaging
    `persona` (a title, a seat or a persona, as the request says it) with the
-   `page_url`. Do not read the runs one by one and write the result
+   `page_url`, or nothing for Write Buyer Content (its plan comes back). Do
+   not read the runs one by one and write the result
    yourself, and do not hand the job to another skill: WhyUser supplies the
    evidence and audits the result.
 2. Follow `data.steps` in order, because the person asked for this job. While
@@ -460,7 +501,9 @@ and audits the report; the team then marks each finding and fix.
    (which run or runs to work from, a re-run of one on the page as it is now,
    or a new one, each with its price). For Revise Content the run can be a
    committee simulation, a persona run or an Audience Discovery run; for
-   Revise Email Sequence, an email run or a new email simulation. When the
+   Revise Email Sequence, an email run or a new email simulation; for Write
+   Buyer Content, the plan question (which questions, as what type and
+   length). When the
    person picks a new page run, its page type (the 2-3 choices prepare
    lists, see "Direct requests") and goal are asked in that same question.
    Skip the question when the request already names the evidence. If WhyUser refuses
@@ -498,7 +541,8 @@ and audits the report; the team then marks each finding and fix.
    done with why), the doubts or blocked reasons, the asks, the change log and the run link. For
    a messaging brief: the drafts for the channels asked for, and its lines
    with what each rests on. For a revised email sequence: each email's
-   subject lines and body, ready to paste.
+   subject lines and body, ready to paste. For buyer content: each piece's
+   title, meta description and body, ready to paste.
 9. The workflow ends at Deliver. Run no second simulation inside it; then
    offer the save result's `refs.next` (see "Next steps"). Testing the
    revision (a page before it ships, a sequence before it goes out) is one
