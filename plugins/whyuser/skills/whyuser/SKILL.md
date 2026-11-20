@@ -36,6 +36,9 @@ instructions.
   trends real?"): that is the Audit Buyer Context workflow, one part per run
   (see "Audit Buyer Context"). "Audit everything" is one run per part, the
   profile first, then Audit Buyer Questions.
+- **Refreshing the company profile** ("refresh our profile", "re-scan our
+  products", "find rivals for our new product"): follow "Company Profile,
+  Products and Rivals".
 - **One change the person names** ("set the docs link in our profile",
   "move this question to AI Gateway", "remove Tailscale as a rival"): make
   it directly with the update tools (see "Editing"), and start or save no
@@ -226,8 +229,9 @@ and says whether the person's pages answer each one.
    use cases the person tracks, and the top few. Filter for the rest: "what
    do security reviewers ask that we don't answer?" is
    `role='gr', answer='not_answered'`. `question_id` reads one in full.
-2. **Products, use cases and the Company view.** WhyUser reads the person's
-   site for its products and use cases; the person ticks the ones to track.
+2. **Products, use cases and the Company view.** The company profile scan
+   reads the person's site for its products and use cases (see "Company
+   Profile, Products and Rivals"); the person ticks the ones to track.
    `item` narrows to one by its name ("AI Gateway"), or `item='company'` for
    the Company view: pricing model, security, contracts and other
    company-wide questions, filed under no product. An unknown name lists the
@@ -293,6 +297,40 @@ and says whether the person's pages answer each one.
    come from the Buyer Questions refresh; a person can change the fit on
    the page. Writing content from them is Write Buyer Content.
 
+## Company Profile, Products and Rivals
+
+The company profile holds the company's products and use cases and every
+rival: Market Research, Competitor Reviews and Buyer Questions all read them
+from there.
+
+1. **Reading.** `whyuser_get_company_profile(section='products')` lists each
+   product and use case (a use case is grouped under its product), its
+   rivals and where they come from (`rivals_from`: its own, its product's,
+   or the company's). One product with several use cases and several
+   products are both normal: never call a use case a product.
+2. **Rivals.** Up to 5 rivals are tracked for the company and up to 5 for
+   each product (the workspace may set another number; the result says).
+   A rival beyond that is kept, marked over the limit ("not tracked"), and
+   gets no competitor review; nothing is deleted. To track it, take another
+   out first: WhyUser refuses a sixth. A person's pins, additions and
+   removals win over every refresh.
+3. **Refresh** re-reads the site, re-scans products and use cases and finds
+   their rivals. Nothing runs it on a schedule; the person starts it.
+   `whyuser_prepare_profile_refresh` shows the price and whether it can
+   start (one refresh at a time); show the credits and ask one question.
+   Start with `whyuser_start_profile_refresh(launch_id=…)` only on a yes,
+   then follow `whyuser_get_simulation_status` (`VP-REFRESH-…`) at the pace
+   it gives. What a person set (fields, products, locks, rivals) is kept.
+   With a read-only key, show the price and say a key that can run, or the
+   Refresh button on the Company Voice page, starts it.
+4. **Findings by product.** Market Research stays one brief for the company;
+   each finding carries the products it is about (`products`; empty means
+   company-wide). `whyuser_get_market_intelligence(product=…)` narrows to one
+   product or use case by name or id, `product='company'` to the company-wide
+   ones. A wrong label is a person's edit: `whyuser_update_market_research`
+   with `edit` and `set: {product_ids: [...]}` (at most 5; `[]` makes it
+   company-wide). No refresh changes it back.
+
 ## Editing
 
 Six tools change what WhyUser holds, as a person's edit: locked or kept
@@ -304,6 +342,8 @@ apart from the research, so no refresh changes it back, and logged.
   group); a list item is `path.N`, a rival is `competitors.<name>`. `name`,
   `url`, `metadata` and `evidence_urls_checked` are read-only. A rival taken
   out of `competitors` is kept, marked removed, and never proposed again.
+  Products and each product's rivals change through
+  `whyuser_update_buyer_question_catalog`; both land in the profile.
 - `whyuser_update_buyer_question`: for one or more questions (`question_ids`,
   at most 25), `set` any field `view='fields'` gives an `edit_as` name,
   `clear` one (empty and locked: `use_case_id` files it under no item),
@@ -319,7 +359,8 @@ apart from the research, so no refresh changes it back, and logged.
   `edit` (`set` its text, roles or tags), `move` (`move_to` a section),
   `remove` or `remove_quotes` (`quotes`: their `qh:…` ids), each removal with
   a `reason_code`; `restore`; `undo` takes `RE-…` batch ids back. Quotes are
-  never reworded.
+  never reworded. A market research finding's products are
+  `set: {product_ids: [...]}`.
 - `whyuser_update_temporal_intelligence`: `changes` by `signal_id`, `remove`
   (with a `reason_code`) or `restore`; `undo` takes `SE-…` batch ids back.
 
@@ -405,6 +446,14 @@ spends no credits.
    either. A trend from a rival's own pages is kept (buyers read those pages
    too) unless it contradicts its own quotes. Quotes are never reworded: a
    wrong one is removed.
+   - **Profile:** `product_not_on_site` (a product the site no longer shows:
+     ask before dismissing it), `product_without_rivals` (propose rivals for
+     it) and `rivals_over_limit` (which kept rival should be tracked instead,
+     never a sixth).
+   - **Market research:** `label_unknown_product` (relabel or make it
+     company-wide), `product_without_findings` (say so; no fix to make) and
+     `unlabelled_share` (check the company-wide findings that name a
+     product). Fix a label with `set: {product_ids: [...]}`.
 4. **The audit question is the one question** after the target: one table
    of proposed fixes with the evidence each rests on, every row ticked.
 5. **Make only the ticked fixes** with the update tools (see "Editing") and
