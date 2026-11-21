@@ -1,7 +1,7 @@
 {
   "name": "whyuser",
   "displayName": "WhyUser",
-  "version": "1.21.0",
+  "version": "1.22.0",
   "description": "Connects WhyUser's MCP server and is the way into WhyUser from Claude: runs simulations, reads results, builds buying committees, edits the company profile, buyer questions and research, and runs WhyUser workflows: Revise Content, Revise Email Sequence, Find Common Patterns, Compare Before and After, Write Persona Messaging, Write Buyer Content, Audit Buyer Questions and Audit Buyer Context.",
   "author": {
     "name": "WhyUser",

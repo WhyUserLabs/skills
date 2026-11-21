@@ -296,6 +296,17 @@ and says whether the person's pages answer each one.
    short factual answer (FAQ) or an article (content), and its topic. Both
    come from the Buyer Questions refresh; a person can change the fit on
    the page. Writing content from them is Write Buyer Content.
+13. **Question sets.** A set is a named group of questions, checked over
+   time to show gaps closing. Checks belong to the questions, so a Refresh
+   of one set shows in every set that holds a question. `whyuser_get_question_sets`
+   lists the sets, or reads one by `set_id`: where it stands, its history,
+   and coverage on two dates (`compare_from`, `compare_to`; only questions
+   on both dates count). `check` reads an older check. Results are one word
+   (Closed, Open, Reopened, Improved, Covered, Lost, Unchecked), each against
+   the question's first check. `whyuser_update_question_set` creates, edits,
+   adds, removes, deletes and refreshes. **A Refresh costs 1 credit**: say
+   so and get a yes before `confirm=true`. Delete asks the same way; the
+   questions stay. The word is Refresh, never "check now".
 
 ## Company Profile, Products and Rivals
 
