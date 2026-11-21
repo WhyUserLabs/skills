@@ -271,9 +271,12 @@ and says whether the person's pages answer each one.
 7. **User defined.** A quote of kind "user defined" is the team's own record
    (CRM notes, an RFP, what sales heard), not a call: say "your team
    recorded", never "a buyer said on a call".
-8. **Answers.** Report each answer as the result labels it. `answer_set_by`
-   means someone on the team set it by hand; say who. When proof is "none on
-   file", never write that claim into copy.
+8. **Answers.** Report each answer as the result labels it. `answer` is
+   the current status; `initial_answer` (and `initial_at`) its first
+   recorded status, in the same words, as the page's Initial and Current
+   columns show them. `answer_set_by` means someone on the team set it by
+   hand; say who. When proof is "none on file", never write that claim into
+   copy.
 9. **Who buyers find.** `who_answers` is one plain search, at one time
    (`searched_at`), for a question the person's pages don't fully answer:
    who owned the top results, by kind (you, you elsewhere, a rival, another
@@ -297,13 +300,14 @@ and says whether the person's pages answer each one.
    come from the Buyer Questions refresh; a person can change the fit on
    the page. Writing content from them is Write Buyer Content.
 13. **Question sets.** A set is a named group of questions, checked over
-   time to show gaps closing. Checks belong to the questions, so a Refresh
-   of one set shows in every set that holds a question. `whyuser_get_question_sets`
-   lists the sets, or reads one by `set_id`: where it stands, its history,
-   and coverage on two dates (`compare_from`, `compare_to`; only questions
-   on both dates count). `check` reads an older check. Results are one word
-   (Closed, Open, Reopened, Improved, Covered, Lost, Unchecked), each against
-   the question's first check. `whyuser_update_question_set` creates, edits,
+   time to show gaps closing. Checks belong to the questions: every change
+   (any set's Refresh, a Buyer Questions refresh, a pasted page) shows in
+   every set that holds one. `whyuser_get_question_sets` lists the sets, or
+   reads one by `set_id`: where it stands, its history, and coverage on two
+   dates (`compare_from`, `compare_to`; only questions on both dates count).
+   `check` reads an older check. Each question has an initial status (its
+   first recorded status, the same in every set) and a current status, in
+   the same words: "Partly, Partly" means no change. `whyuser_update_question_set` creates, edits,
    adds, removes, deletes and refreshes. **A Refresh costs 1 credit**: say
    so and get a yes before `confirm=true`. Delete asks the same way; the
    questions stay. The word is Refresh, never "check now".
